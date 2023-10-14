@@ -1,11 +1,11 @@
 from dataclasses import dataclass
-from request import Request
+from search_parameters import SearchParameters
 
 
 # stores information about single advertisement
 @dataclass
 class PropertyUnit:
-    request: Request  # by which request was this info obtained
+    request: SearchParameters  # by which request was this info obtained
     id: int  # id in parsaraki database
     date: str  # date of request
     bedrooms: int

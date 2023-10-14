@@ -1,8 +1,10 @@
 from pydantic import BaseModel, ValidationError, field_validator, Field
-import json
 
 
-class Request(BaseModel):
+# class containing parameters of the search request.
+# Inheriting from BaseModel as it allows to validate
+# input json with @field_validator
+class SearchParameters(BaseModel):
     lat: float = Field(default=34.700778)
     lon: float = Field(default=34.700778)
     radius: int = Field(default=50000)
@@ -19,6 +21,7 @@ class Request(BaseModel):
     facilities: list[str] = Field(default=None)
     pets: str = Field(default="")
 
+    # TODO: add  validation for all other fileds
     @field_validator('lat')
     def lat_ok(cls, v) -> float:
         if v < 34.545318 or v > 35.693639:
@@ -45,9 +48,10 @@ class Request(BaseModel):
         return v
 
 
-def create_request(json_data: str) -> Request:
+# create an object of SearchParameters class, verifying class fields:
+def create_search_parameters_object(json_data: str) -> SearchParameters:
     try:
-        request = Request.model_validate_json(json_data)
+        request = SearchParameters.model_validate_json(json_data)
     except ValidationError as e:
         print(f'ERROR:\n{e.json()}')
     else:
