@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+import json
 
 
 # class containing parameters of the search request.
@@ -14,10 +15,10 @@ class SearchParameters(BaseModel):
     priceMax: int = Field(default=None)
     constructionYearMin: int = Field(default=None)
     constructionYearMax: int = Field(default=None)
-    numberBedrooms: int = Field(default=None)
+    numberBedrooms: [int] = Field(default=[])
     areaMin: int = Field(default=None)
     areaMax: int = Field(default=None)
-    furnishing: str = Field(default="")
-    facilities: list[str] = Field(default=[])
-    pets: str = Field(default="")
-    onlineViewing: str = Field(default="")
+    furnishing: int = Field(default=None)
+    pets: int = Field(default=None)
+
+
