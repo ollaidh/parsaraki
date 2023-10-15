@@ -11,7 +11,7 @@ class SearchParameters(BaseModel):
     radius: int = Field(default=5000)
     action: str = Field(default="rent")
     propertyType: str = Field(default="")
-    priceMin: int = Field(default=10)
+    priceMin: int = Field(default=None)
     priceMax: int = Field(default=None)
     numberBedrooms: list[int] = Field(default=[])
     furnishing: int = Field(default=None)
