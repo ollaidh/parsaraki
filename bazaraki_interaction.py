@@ -1,4 +1,5 @@
 from search_parameters import SearchParameters
+from property_unit import PropertyUnit
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
@@ -62,13 +63,19 @@ def parse_single_ads(parameters: tuple[str, dict]):
         soup = BeautifulSoup(req_result.content, "html.parser")
         results = soup.find(id="listing")
         # list of all ads:
-        ads = results.find_all("a", class_="announcement-block__title")
+        ads = results.find_all("a", class_="advert__content-price _not-title")
         # form the whole link and add to resulting set:
         for ad in ads:
             result.add('https://www.bazaraki.com' + ad["href"])
-        # go to nex page:
+        # go to next page:
         parameters[1]['page'] += 1
     return result
+
+
+def get_adv_params(adv_link: str) -> PropertyUnit:
+    adv_req = requests.get(adv_link)
+    soup = BeautifulSoup(adv_req.content, "html.parser")
+    print(soup)
 
 
 
