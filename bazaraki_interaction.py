@@ -37,7 +37,7 @@ def search_bazaraki(search: SearchParameters) -> tuple:
 def parse_single_ads(parameters: tuple[str, dict]):
     # using set to avoid duplicates, because the same ad on one page can occur twice:
     # in VIP section and in regular section
-    result = set()
+    result = []
 
     # starting from page 1
     parameters[1]['page'] = 1
@@ -62,20 +62,28 @@ def parse_single_ads(parameters: tuple[str, dict]):
         req_result = requests.get(parameters[0], parameters[1])
         soup = BeautifulSoup(req_result.content, "html.parser")
         results = soup.find(id="listing")
+        # print(results)
         # list of all ads:
         ads = results.find_all("a", class_="advert__content-price _not-title")
-        # form the whole link and add to resulting set:
+        # get property id, price, bedrooms and link for each ad from search results:
         for ad in ads:
-            result.add('https://www.bazaraki.com' + ad["href"])
+            # get prices (current and maybe before discount):
+            prices = ad.find('span').get_text(strip=True).lstrip("€")
+            # to get only current price and get rid of price before discount:
+            prices = prices.split('€')
+
+            id_ppt = ad["href"].split("/")[2].split("_")[0]
+            price = prices[0]
+            bedrooms = ad["href"].split("/")[2].split("_")[1].split("-")[0]
+            link = f'https://www.bazaraki.com{ad["href"]}'
+            result.append({"id": id_ppt, "price": price, "bedrooms": bedrooms, "link": link})
         # go to next page:
         parameters[1]['page'] += 1
+
+    print(result)
     return result
 
 
-def get_adv_params(adv_link: str) -> PropertyUnit:
-    adv_req = requests.get(adv_link)
-    soup = BeautifulSoup(adv_req.content, "html.parser")
-    print(soup)
 
 
 
