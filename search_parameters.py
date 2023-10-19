@@ -1,5 +1,4 @@
-from pydantic import BaseModel, Field
-import json
+from pydantic import BaseModel, ValidationError, field_validator, model_validator, Field
 
 
 # class containing parameters of the search request.
@@ -13,8 +12,72 @@ class SearchParameters(BaseModel):
     propertyType: str = Field(default="")
     priceMin: int = Field(default=None)
     priceMax: int = Field(default=None)
-    numberBedrooms: list[int] = Field(default=[])
+    numberBedrooms: list[str] = Field(default=[])
     furnishing: int = Field(default=None)
     pets: int = Field(default=None)
+
+    @field_validator('lat')
+    def lat_ok(cls, v) -> float:
+        if v < 34.545318 or v > 35.693639:
+            raise ValueError('Latitude OUT OF CYPRUS!')
+        return v
+
+    @field_validator('lon')
+    def lon_ok(cls, v) -> float:
+        if v < 32.328499 or v > 34.585886:
+            raise ValueError('Latitude OUT OF CYPRUS!')
+        return v
+
+    @field_validator('radius')
+    def radius_ok(cls, v) -> int:
+        if v and v < 0:
+            raise ValueError(f'Search radius must ne positive!')
+        return v
+
+    @field_validator('action')
+    def action_ok(cls, v) -> str:
+        actions = ["rent", "buy"]
+        if v and v not in actions:
+            raise ValueError(f'Actions are: {actions}!')
+        return v
+
+    @field_validator('propertyType')
+    def property_ok(cls, v) -> str:
+        properties = ["apartments", "houses"]
+        if v and v not in properties:
+            raise ValueError('Types of property are: {properties}!')
+        return v
+
+    @field_validator('priceMin')
+    def price_min_ok(cls, v) -> int:
+        if v and v < 0:
+            raise ValueError('Min price must be > 0!')
+        return v
+
+    @field_validator('priceMax')
+    def price_max_ok(cls, v) -> int:
+        if v and v < 0:
+            raise ValueError('Max price must be > 0!')
+        return v
+
+    @model_validator(mode='before')
+    def prices_ok(cls, data) -> int:
+        if data['priceMin'] and data['priceMax'] and data['priceMin'] > data['priceMax']:
+            raise ValueError('Max price must be > Min price!')
+        return data
+
+    @field_validator('numberBedrooms')
+    def bedrooms_ok(cls, values) -> str:
+        bedrooms = {"studio"}
+        for v in values:
+            try:
+                if int(v) < 0:
+                    raise ValueError('Number of bedrooms must be positive!')
+            except ValueError:
+                if v not in bedrooms:
+                    raise ValueError(f'Number of bedrooms must be entered as a number or {bedrooms}')
+        return values
+
+# TODO: furnishing and pets validation
 
 
