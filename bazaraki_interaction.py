@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
+import datetime
 
 
 # create web request based on input search parameters and get results of request
@@ -36,7 +37,7 @@ def search_bazaraki(search: SearchParameters) -> tuple:
 
 
 # sends a request, gets search result, parses search result into separate links to each adv
-def parse_single_ads(parameters: tuple[str, dict]):
+def parse_single_ads(parameters: tuple[str, dict]) -> list[dict]:
     # using set to avoid duplicates, because the same ad on one page can occur twice:
     # in VIP section and in regular section
     result = []
@@ -78,14 +79,16 @@ def parse_single_ads(parameters: tuple[str, dict]):
             price = prices[0]
             bedrooms = ad["href"].split("/")[2].split("_")[1].split("-")[0]
             link = f'https://www.bazaraki.com{ad["href"]}'
-            result.append({"id": id_ppt, "price": price, "bedrooms": bedrooms, "link": link})
+            result.append(
+                {
+                    "id": id_ppt,
+                    "price": {str(datetime.date.today()): price},
+                    "bedrooms": bedrooms,
+                    "link": link
+                }
+            )
         # go to next page:
         parameters[1]['page'] += 1
 
     print(result)
     return result
-
-
-
-
-
