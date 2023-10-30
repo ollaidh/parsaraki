@@ -62,7 +62,7 @@ class SearchParameters(BaseModel):
 
     @model_validator(mode='before')
     def prices_ok(cls, data) -> int:
-        if data['priceMin'] and data['priceMax'] and data['priceMin'] > data['priceMax']:
+        if 'priceMin' in data.keys() and 'priceMax' in data.keys() and data['priceMin'] > data['priceMax']:
             raise ValueError('Max price must be > Min price!')
         return data
 
