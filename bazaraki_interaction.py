@@ -16,7 +16,9 @@ def search_bazaraki(search: SearchParameters) -> tuple:
     url = 'https://www.bazaraki.com/'
     action = 'real-estate-to-rent/'
     property_type = 'apartments-flats/' if search.propertyType == 'apartments' else 'houses/'
-    furnish = f'furnishing---{str(search.furnishing)}/' if search.furnishing else ''
+    furnish = ''
+    for param in search.furnishing:
+        furnish += f'furnishing---{param}/'
     bedrooms = ''
     for param in search.numberBedrooms:
         bedrooms += f'number-of-bedrooms---{param}/'

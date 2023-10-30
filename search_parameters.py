@@ -13,8 +13,8 @@ class SearchParameters(BaseModel):
     priceMin: int = Field(default=None)
     priceMax: int = Field(default=None)
     numberBedrooms: list[str] = Field(default=[])
-    furnishing: int = Field(default=None)
-    pets: int = Field(default=None)
+    furnishing: list[str] = Field(default="")
+    pets: str = Field(default="")
 
     @field_validator('lat')
     def lat_ok(cls, v) -> float:
@@ -78,6 +78,21 @@ class SearchParameters(BaseModel):
                     raise ValueError(f'Number of bedrooms must be entered as a number or {bedrooms}')
         return values
 
-# TODO: furnishing and pets validation
+    @field_validator('furnishing')
+    def furnishing_ok(cls, values) -> list[str]:
+        furnishing = {"yes": "1", "no": "2", "partly": "3", "appliances only": "4"}
+        f = []
+        for v in values:
+            if v not in furnishing:
+                raise ValueError(f'Furnishing can be: {furnishing}')
+            f.append(furnishing[v])
+        return f
+
+    @field_validator('pets')
+    def pets_ok(cls, value) -> list[str]:
+        pets = {"yes": "1", "no": "2"}
+        if value not in pets:
+            raise ValueError(f'Furnishing can be: {pets}')
+        return pets[value]
 
 
