@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ValidationError, field_validator, model_validator, Field
+from pydantic import BaseModel, field_validator, model_validator, Field
 
 
 # class containing parameters of the search request.

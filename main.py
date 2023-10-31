@@ -1,7 +1,5 @@
 import json
-import requests
 
-from search_parameters import SearchParameters
 from bazaraki_connector import *
 from pydantic import ValidationError
 import argparse
