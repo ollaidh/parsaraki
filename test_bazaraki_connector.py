@@ -1,6 +1,6 @@
 import unittest
 
-from bazaraki_interaction import *
+from bazaraki_connector import *
 from search_parameters import SearchParameters
 
 

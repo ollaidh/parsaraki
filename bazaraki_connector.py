@@ -87,5 +87,5 @@ def parse_single_ads(parameters: tuple[str, dict]) -> dict[int: dict]:
         # go to next page:
         parameters[1]['page'] += 1
 
-    print(result)
+    # print(result)
     return result
