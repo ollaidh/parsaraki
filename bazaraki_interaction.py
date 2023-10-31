@@ -1,5 +1,5 @@
 from search_parameters import SearchParameters
-from property_unit import PropertyUnit
+# from property_unit import PropertyUnit
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
@@ -37,10 +37,9 @@ def search_bazaraki(search: SearchParameters) -> tuple:
 
 
 # sends a request, gets search result, parses search result into separate links to each adv
-def parse_single_ads(parameters: tuple[str, dict]) -> list[dict]:
-    # using set to avoid duplicates, because the same ad on one page can occur twice:
-    # in VIP section and in regular section
-    result = []
+def parse_single_ads(parameters: tuple[str, dict]) -> dict[int: dict]:
+    # returning the result - dict where key is id of apartment and value is dict with it's parameters
+    result = {}
 
     # starting from page 1
     parameters[1]['page'] = 1
@@ -75,18 +74,16 @@ def parse_single_ads(parameters: tuple[str, dict]) -> list[dict]:
             # to get only current price and get rid of price before discount:
             prices = prices.split('€')
 
-            id_ppt = ad["href"].split("/")[2].split("_")[0]
+            id_ppt = int(ad["href"].split("/")[2].split("_")[0])
             price = prices[0]
             bedrooms = ad["href"].split("/")[2].split("_")[1].split("-")[0]
             link = f'https://www.bazaraki.com{ad["href"]}'
-            result.append(
-                {
-                    "id": id_ppt,
-                    "price": {str(datetime.date.today()): price},
+            result[id_ppt] = {
+                    "date": str(datetime.date.today()),
+                    "price": price,
                     "bedrooms": bedrooms,
                     "link": link
                 }
-            )
         # go to next page:
         parameters[1]['page'] += 1
 
