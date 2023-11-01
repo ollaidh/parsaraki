@@ -9,27 +9,33 @@ def parse_args(args: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", "-i")
     parser.add_argument("--output", "-o")
-    return parser.parse_args(args)
+    args = parser.parse_args(args)
+    if args.input is None or args.output is None:
+        raise ValueError("Some arguments are missing!")
+    return args
 
 
 def main():
-    args = parse_args()
-
-    search_parameters = args.input
-    output_path = args.output
-
     try:
-        with open(search_parameters) as file:
-            request = SearchParameters.model_validate_json(file.read())
-            req = search_bazaraki(request)
-            ads = parse_single_ads(req)
-            postfix = str(datetime.date.today())  # add postfix to filename
+        args = parse_args()
 
-            with open(output_path.replace("%d", postfix), "w+") as f:
-                f.write(json.dumps(ads))
+        search_parameters = args.input
+        output_path = args.output
 
-    except ValidationError as e:
-        print("ERROR IN INPUT JSON:\n", e)
+        try:
+            with open(search_parameters) as file:
+                request = SearchParameters.model_validate_json(file.read())
+                req = search_bazaraki(request)
+                ads = parse_single_ads(req)
+                postfix = str(datetime.date.today())  # add postfix to filename
+
+                with open(output_path.replace("%d", postfix), "w+") as f:
+                    f.write(json.dumps(ads))
+
+        except ValidationError as e:
+            print("ERROR IN INPUT JSON:\n", e)
+    except ValueError as e:
+        print(e)
 
 
 if __name__ == '__main__':
