@@ -1,5 +1,8 @@
 import unittest
-from main import parse_args
+from main import parse_args, generate_filename
+from freezegun import freeze_time
+import datetime
+
 
 
 class TestMain(unittest.TestCase):
@@ -20,3 +23,8 @@ class TestMain(unittest.TestCase):
         input_args3 = ['-i', 'input.json']
         with self.assertRaises(ValueError):
             parse_args(input_args3)
+
+    @freeze_time("2012-01-01")
+    def test_generate_filename(self):
+        self.assertEqual('myfile_2012-01-01.dat', generate_filename('myfile_%d.dat'))
+

@@ -15,6 +15,12 @@ def parse_args(args: list[str] | None = None) -> argparse.Namespace:
     return args
 
 
+def generate_filename(output_path: str) -> str:
+    postfix = str(datetime.date.today())  # postfix to add to filename
+    output_path = output_path.replace("%d", postfix)
+    return output_path
+
+
 def main():
     try:
         args = parse_args()
@@ -27,9 +33,9 @@ def main():
                 request = SearchParameters.model_validate_json(file.read())
                 req = search_bazaraki(request)
                 ads = parse_single_ads(req)
-                postfix = str(datetime.date.today())  # add postfix to filename
+                filename = generate_filename(output_path)
 
-                with open(output_path.replace("%d", postfix), "w+") as f:
+                with open(filename, "w+") as f:
                     f.write(json.dumps(ads))
 
         except ValidationError as e:
