@@ -7,11 +7,9 @@ import argparse
 
 def parse_args(args: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", "-i")
-    parser.add_argument("--output", "-o")
+    parser.add_argument("--input", "-i", required=True)
+    parser.add_argument("--output", "-o", required=True)
     args = parser.parse_args(args)
-    if args.input is None or args.output is None:
-        raise ValueError("Some arguments are missing!")
     return args
 
 
@@ -24,7 +22,6 @@ def generate_filename(output_path: str) -> str:
 def main():
     try:
         args = parse_args()
-
         search_parameters = args.input
         output_path = args.output
 

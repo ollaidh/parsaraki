@@ -1,8 +1,6 @@
 import unittest
 from main import parse_args, generate_filename
 from freezegun import freeze_time
-import datetime
-
 
 
 class TestMain(unittest.TestCase):
@@ -21,7 +19,7 @@ class TestMain(unittest.TestCase):
 
         # not all args provided in command line:
         input_args3 = ['-i', 'input.json']
-        with self.assertRaises(ValueError):
+        with self.assertRaises(BaseException):
             parse_args(input_args3)
 
     @freeze_time("2012-01-01")
