@@ -16,13 +16,13 @@ class FirestoreAdapter:
         apts_database = self.db.collection("properties")
         for apt_id, apt_info in search.items():
             curr_apt = apts_database.document(str(apt_id))
-            if curr_apt.get().to_dict():
-                # curr_apt.collection("info").document("price")[apt_info["date"]] = apt_info["price"]
-                # curr_info = curr_apt.collection("info").document("price").collection[]get().to_dict()
-                # print(curr_apt.collection("info").get().docs.map())
-                # print(curr_info)
-                pass
+            doc = curr_apt.get()
+            if doc.exists:
+                data = doc.to_dict()
+                print(data)
+                data["price"][apt_info["date"]] = apt_info["price"]
+                curr_apt.set(data)
             else:
                 apt_info["price"] = {apt_info["date"]: apt_info["price"]}
                 apt_info.pop("date", None)
-                curr_apt.set({"info": apt_info})
+                curr_apt.set(apt_info)
