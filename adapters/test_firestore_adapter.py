@@ -3,6 +3,14 @@ from firestore_adapter import *
 import requests
 
 
+def delete_collection_firestore(coll_ref):
+    docs = coll_ref.list_documents()
+
+    for doc in docs:
+        print(f"Deleting doc {doc.id} => {doc.get().to_dict()}")
+        doc.delete()
+
+
 class TestFirestoreAdapter(unittest.TestCase):
     def setUp(self) -> None:
         emulator_host = os.getenv('FIRESTORE_EMULATOR_HOST')
@@ -15,6 +23,12 @@ class TestFirestoreAdapter(unittest.TestCase):
 
     def test_add_search_results(self):
         adapter = FirestoreAdapter()
+
+        # check if collection already exists:
+        docs = adapter.db.collection("properties").limit(1).get()
+        if len(list(docs)) > 0:
+            delete_collection_firestore(adapter.db.collection("properties"))
+
         adapter.add_search_results(
             {
                 1: {"date": '2022-12-12', "price": 2500, "bedrooms": 1, "link": 'link1'},
@@ -63,4 +77,6 @@ class TestFirestoreAdapter(unittest.TestCase):
             {"bedrooms": 3, "link": 'link5', "price": {'2022-12-13': 2700}},
             result5
         )
+
+        delete_collection_firestore(adapter.db.collection("properties"))
 
