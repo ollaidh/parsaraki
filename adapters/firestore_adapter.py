@@ -5,7 +5,7 @@ from google.cloud.firestore import Client
 
 class FirestoreAdapter:
     def __init__(self):
-        project_id = os.getenv('BUDBOT_PROJECT_ID')
+        project_id = os.getenv('PARSARAKI_PROJECT_ID')
         if os.getenv('GOOGLE_APPLICATION_CREDENTIALS') is None:
             cred = AnonymousCredentials()
         else:

@@ -24,11 +24,6 @@ class TestFirestoreAdapter(unittest.TestCase):
     def test_add_search_results(self):
         adapter = FirestoreAdapter()
 
-        # check if collection already exists and delete it:
-        docs = adapter.db.collection("properties").limit(1).get()
-        if len(list(docs)) > 0:
-            delete_collection_firestore(adapter.db.collection("properties"))
-
         adapter.add_search_results(
             {
                 1: {"date": '2022-12-12', "price": 2500, "bedrooms": 1, "link": 'link1'},
