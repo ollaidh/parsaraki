@@ -77,17 +77,15 @@ class SearchParameters(BaseModel):
 
     @field_validator("numberBedrooms")
     def bedrooms_ok(cls, values) -> str:
-        bedrooms = {"studio"}
+        bedrooms = []
         for v in values:
             try:
-                if int(v) < 0:
-                    raise ValueError("Number of bedrooms must be positive!")
+                if int(v) == 0:
+                    v = "studio"
+                bedrooms.append(v)
             except ValueError:
-                if v not in bedrooms:
-                    raise ValueError(
-                        f"Number of bedrooms must be entered as a number or {bedrooms}"
-                    )
-        return
+                raise ValueError("Number of bedrooms must be a positive integer!")
+        return f"number-of-bedrooms---{'/'.join(bedrooms)}"
 
     @field_validator("furnishing")
     def furnishing_ok(cls, values) -> str:
