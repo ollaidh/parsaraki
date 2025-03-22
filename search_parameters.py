@@ -90,14 +90,14 @@ class SearchParameters(BaseModel):
         return
 
     @field_validator("furnishing")
-    def furnishing_ok(cls, values) -> list[str]:
+    def furnishing_ok(cls, values) -> str:
         furnishing = {"yes": "1", "no": "2", "partly": "3", "appliances only": "4"}
         f = []
         for v in values:
             if v not in furnishing:
                 raise ValueError(f"Furnishing can be: {furnishing}")
             f.append(furnishing[v])
-        return f
+        return f"furnishing---{'/'.join(f)}"
 
     @field_validator("pets")
     def pets_ok(cls, value) -> list[str]:
